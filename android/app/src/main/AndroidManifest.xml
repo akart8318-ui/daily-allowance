@@ -1,0 +1,39 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dailyallowance.tracker">
+
+    <!-- Permissions required for on-device real-time financial tracking -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:allowBackup="false"
+        android:label="Daily Allowance"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+
+        <!-- 1. Notification Listener Service for Google Pay, PhonePe, Paytm, etc. -->
+        <service
+            android:name=".service.UpiNotificationListenerService"
+            android:label="UPI Allowance Notification Listener"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- 2. Bank SMS BroadcastReceiver (Fallback for official bank debit alerts) -->
+        <receiver
+            android:name=".receiver.BankSmsBroadcastReceiver"
+            android:permission="android.permission.BROADCAST_SMS"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>
